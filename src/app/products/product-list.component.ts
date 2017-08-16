@@ -1,19 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import { IProduct } from './product';
+import { ProductService } from './products.service';
 
 @Component({
-    selector: 'pm-products',
+    //selector: 'pm-products', a selector is not needed if you are routing to the component
     templateUrl: './product-list.component.html',
     styleUrls: ['./product-list.component.css']
 })
 
 export class ProductListComponent implements OnInit {
+    private _listFilter: string;
+    
     panelTitle: string = 'Product List';
     imageWidth: number = 50;
     imageMargin: number = 2;
     showImage: boolean = false;
+    errorMessage: string;
+    filteredProducts: IProduct[];
+    products: IProduct[] = [];
 
-    _listFilter: string;
+    constructor(private _productService: ProductService) {
+    }
+
     get listFilter(): string {
         return this._listFilter;
     }
@@ -22,47 +30,22 @@ export class ProductListComponent implements OnInit {
         this.filteredProducts = this.listFilter ? this.performFilter(this.listFilter) : this.products;
     }
 
-    filteredProducts: IProduct[];
-    products: IProduct[] = [
-        {
-            "productId": 2,
-            "productName": "Garden Cart",
-            "productCode": "GDN-0023",
-            "releaseDate": "March 18, 2016",
-            "description": "15 gallon capacity rolling garden cart",
-            "price": 32.99,
-            "starRating": 4.2,
-            "imageUrl": "http://openclipart.org/image/300px/svg_to_png/58471/garden_cart.png"
-        },
-        {
-            "productId": 5,
-            "productName": "Hammer",
-            "productCode": "TBX-0048",
-            "releaseDate": "May 21, 2016",
-            "description": "Curved claw steel hammer",
-            "price": 8.9,
-            "starRating": 4.8,
-            "imageUrl": "http://openclipart.org/image/300px/svg_to_png/73/rejon_Hammer.png"
-        }
-    ];
-
-    // this is the best place to intialize properties
-    constructor() {
-        this.filteredProducts = this.products;
-        this.listFilter = 'cart';
-    }
-
     toggleImage(): void {
         this.showImage = !this.showImage;
     }
 
     ngOnInit(): void {
-        console.log('OnInit has been invoked');
+        this._productService.getProducts()
+            .subscribe(products => {
+                this.products = products;
+                this.filteredProducts = this.products;
+                },
+                error => this.errorMessage = <any> error);
     }
 
     performFilter(filter: string): IProduct[] {
         filter = filter.toLocaleLowerCase();
-        // THIS IS THE FAT ARROW SYNTAX, IN ES6, THAT YOU SHOULD LEARN FOR BLUVISION
+        // TODO - THIS IS THE FAT ARROW SYNTAX, IN ES6, THAT YOU SHOULD LEARN FOR BLUVISION
         return this.products.filter((product: IProduct) =>
             product.productName.toLocaleLowerCase().indexOf(filter) != -1);
     }
