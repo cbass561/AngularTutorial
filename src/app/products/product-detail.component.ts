@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IProduct } from './product';
+import { ProductService } from "./products.service";
 
 @Component({
   selector: 'pm-product-detail',
@@ -12,7 +13,8 @@ export class ProductDetailComponent implements OnInit {
   product: IProduct;
 
   constructor(private _route: ActivatedRoute,
-              private _router: Router) { }
+              private _router: Router,
+              private _productService: ProductService) { }
 
   ngOnInit() {
     // This is how you get the url parameter 'id', there are alternatives way that might be worth investigating
@@ -20,6 +22,12 @@ export class ProductDetailComponent implements OnInit {
     // The let is used to create a block variable, not sure what that means but it has something to do with scope
     // The + is a shortcut to cast a string to a number
     this.pageTitle += `: ${id}`;
+    this._productService.getProduct(id)
+                .subscribe(
+                  product => this.product = product,
+                  error => console.log(error)
+                );
+
   }
 
   onBack(): void {
