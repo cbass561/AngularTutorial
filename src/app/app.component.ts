@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { ProductService } from './products/products.service';
 
 @Component({
   selector: 'pm-root',
@@ -18,8 +17,7 @@ import { ProductService } from './products/products.service';
         <router-outlet></router-outlet>
       </div>
     </div>
-  `,
-  providers: [ProductService]
+  `
 })
 
 export class AppComponent {

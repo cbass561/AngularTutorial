@@ -3,7 +3,7 @@ import { CanActivate, ActivatedRouteSnapshot, Router } from "@angular/router";
 
 @Injectable()
 export class ProductGuardService implements CanActivate{
-
+  variable: string = 'hello'
   constructor(private _router: Router) { }
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
